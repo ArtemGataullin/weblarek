@@ -15,11 +15,11 @@ const productsCatalogModel = new ProductCatalog();
 
 productsCatalogModel.saveProducts(apiProducts.items);
 console.log("Массив товаров из каталога: ", productsCatalogModel.getProducts());
+console.log("Товар найденный по id из массива товаров: ", productsCatalogModel.getProductByID('c101ab44-ed99-4a54-990d-47aa2bb4e7d9'));
+console.log("Товар не найденный по id из массива товаров: ", productsCatalogModel.getProductByID('c101ab44-ed99-4a54-990d-47aa2bb4e7d1'));
 
-productsCatalogModel.saveProduct(apiProducts.items[1])
-console.log("Товар найденный по id из каталога: ", productsCatalogModel.getProductByID('c101ab44-ed99-4a54-990d-47aa2bb4e7d9'));
-productsCatalogModel.saveProduct(apiProducts.items[0])
-console.log("Товар выбранный для отображения: ", productsCatalogModel.getProducts()[0]);
+productsCatalogModel.setSelectedProduct(apiProducts.items[1])
+console.log("Товар выбранный для отображения: ", productsCatalogModel.getSelectedProduct());
 
 // Корзина
 console.log('------------------------------Корзина-----------------------------------');
@@ -72,8 +72,8 @@ serverApiModel.getProducts()
         console.log('Массив товаров от сервера: ', productsCatalogModel.getProducts());
         console.log('Товар найденный по id из массива: ', productsCatalogModel.getProductByID("854cef69-976d-4c2a-a18c-2aa45046c390"));
         console.log('Товар не найденный по id из массива: ', productsCatalogModel.getProductByID("854cef69-976d-4c2a-a18c-2aa45046c391"));
-        productsCatalogModel.saveProduct(result.items[0]);
-        console.log('Товар выбранный для отображения: ', productsCatalogModel.getProduct());
+        productsCatalogModel.setSelectedProduct(result.items[0]);
+        console.log('Товар выбранный для отображения: ', productsCatalogModel.getSelectedProduct());
 
         // Просмотр shoppingCartModel класс
         shoppingCartModel.addSelectedProduct(result.items[0]);

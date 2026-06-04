@@ -21,11 +21,11 @@ export class ProductCatalog {
     return this.products.find((product) => product.id === id);
   }
 
-  saveProduct(product: IProduct | null){
+  setSelectedProduct(product: IProduct | null){
     this.selectedProduct = product;
   }
 
-  getProduct(): IProduct | null {
+  getSelectedProduct(): IProduct | null {
     return this.selectedProduct;
   }
 }

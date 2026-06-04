@@ -12,6 +12,6 @@ export class ServerApi {
   }
 
   async postOrder(orderRequest: IOrderRequest): Promise<TOrderResponse> {
-    return this.api.post('/order/', orderRequest);
+    return this.api.post<TOrderResponse>('/order/', orderRequest);
   }
 }
