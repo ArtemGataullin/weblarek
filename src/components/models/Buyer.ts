@@ -1,7 +1,7 @@
-import { TBuyer, TPayment, TBuyerValidationErrors } from "../../types/index";
+import { IBuyer, TPayment, TBuyerValidationErrors } from "../../types/index";
 
 export class Buyer {
-    protected data: TBuyer;
+    protected data: IBuyer;
 
     constructor() {
         this.data = {
@@ -28,7 +28,7 @@ export class Buyer {
         this.data.phone = phone;
     }
 
-    getData(): TBuyer {
+    getData(): IBuyer {
         return this.data;
     }
 

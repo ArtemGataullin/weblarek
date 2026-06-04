@@ -1,4 +1,4 @@
-import { IApi, TOrderRequest, TOrderResponse, TOrderResultApi } from "../../types/index";
+import { IApi, IOrderRequest, TOrderResponse, IProductListApi } from "../../types/index";
 
 export class ServerApi {
   protected api: IApi;
@@ -7,11 +7,11 @@ export class ServerApi {
     this.api = api;
   }
 
-  async getProducts(): Promise<TOrderResultApi> {
-    return this.api.get('/product/');
+  async getProducts(): Promise<IProductListApi> {
+    return this.api.get<IProductListApi>("/product/");
   }
 
-  async postOrder(orderRequest: TOrderRequest): Promise<TOrderResponse> {
+  async postOrder(orderRequest: IOrderRequest): Promise<TOrderResponse> {
     return this.api.post('/order/', orderRequest);
   }
 }

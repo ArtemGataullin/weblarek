@@ -1,17 +1,17 @@
-import { TProduct } from '../../types/index';
+import { IProduct } from '../../types/index';
 
 export class ShoppingCart {
-  protected selectedProducts: TProduct[];
+  protected selectedProducts: IProduct[];
 
   constructor() {
     this.selectedProducts = [];
   }
 
-  getSelectedProducts(): TProduct[] {
+  getSelectedProducts(): IProduct[] {
     return this.selectedProducts;
   }
 
-  addSelectedProduct(product: TProduct) {
+  addSelectedProduct(product: IProduct) {
     this.selectedProducts.push(product);
   }
 

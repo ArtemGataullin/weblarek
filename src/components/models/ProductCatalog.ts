@@ -1,31 +1,31 @@
-import { TProduct } from '../../types/index';
+import { IProduct } from '../../types/index';
 
 export class ProductCatalog {
-  protected products: TProduct[];
-  protected selectedProduct: TProduct | null;
+  protected products: IProduct[];
+  protected selectedProduct: IProduct | null;
 
   constructor() {
     this.products = [];
     this.selectedProduct = null
   }
 
-  saveProducts(products: TProduct[]){
+  saveProducts(products: IProduct[]){
     this.products = products;
   }
 
-  getProducts(): TProduct[] {
+  getProducts(): IProduct[] {
     return this.products;
   }
 
-  getProductByID(id: string): TProduct | undefined {
+  getProductByID(id: string): IProduct | undefined {
     return this.products.find((product) => product.id === id);
   }
 
-  saveProduct(product: TProduct | null){
+  saveProduct(product: IProduct | null){
     this.selectedProduct = product;
   }
 
-  getProduct(): TProduct | null {
+  getProduct(): IProduct | null {
     return this.selectedProduct;
   }
 }
