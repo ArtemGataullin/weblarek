@@ -16,20 +16,23 @@
 </head>
 <body class="page">
 	<div class="page__wrapper">
+		<!-- Класс Header  -->
 		<header class="header">
 			<div class="header__container">
 				<a class="header__logo" href="/">
 					<img class="header__logo-image" src="<%=require('../images/logo.svg')%>" alt="Web-Larek! logo" />
 				</a>
+				<!-- Элемент должен быть взаимодействован(поля класса) htmlbuttonElement -->
 				<button class="header__basket">
+					<!-- Элемент должен быть найден в конструкторе класса(поля класса) htmlElement -->
 					<span class="header__basket-counter">0</span>
 				</button>
 			</div>
 		</header>
-
+		<!-- Класс Gallery -->
 		<main class="gallery"></main>
 	</div>
-
+	<!-- Класс Modal -->
 	<div class="modal" id="modal-container">
 		<div class="modal__container">
 			<button class="modal__close" aria-label="закрыть"></button>
@@ -38,7 +41,7 @@
 			</div>
 		</div>
 	</div>
-
+	<!-- Класс Success-->
 	<template id="success">
 		<div class="order-success">
 			<h2 class="order-success__title">Заказ оформлен</h2>
@@ -47,7 +50,10 @@
 		</div>
 	</template>
 
+
+<!-- Один общий родитель Товар для трех товаров -->
 	<template id="card-catalog">
+		<!-- Класс CardCatalog -->
 		<button class="gallery__item card">
 			<span class="card__category card__category_soft">софт-скил</span>
 			<h2 class="card__title">+1 час в сутках</h2>
@@ -57,6 +63,7 @@
 	</template>
 
 	<template id="card-preview">
+		<!-- Класс  CardPreview-->
 		<div class="card card_full">
 			<img class="card__image" src="<%=require('../images/Subtract.svg')%>" alt="" />
 			<div class="card__column">
@@ -72,6 +79,7 @@
 	</template>
 
 	<template id="card-basket">
+		<!-- Класс CardBasket -->
 		<li class="basket__item card card_compact">
 			<span class="basket__item-index">1</span>
 			<span class="card__title">Фреймворк куки судьбы</span>
@@ -80,7 +88,10 @@
 		</li>
 	</template>
 
+
+
 	<template id="basket">
+		<!-- Класс basket -->
 		<div class="basket">
 			<h2 class="modal__title">Корзина</h2>
 			<ul class="basket__list">
@@ -93,7 +104,12 @@
 		</div>
 	</template>
 
+
+
+<!-- Один общий родитель форма для двух форм -->
+	<!-- Общий класс Form -->
 	<template id="order">
+		<!-- Класс FormOrder-->
 		<form class="form" name="order">
 			<div class="order">
 				<div class="order__field">
@@ -116,6 +132,7 @@
 	</template>
 
 	<template id="contacts">
+		<!-- Класс FormContacts-->
 		<form class="form" name="contacts">
 			<div class="order">
 				<label class="order__field">
