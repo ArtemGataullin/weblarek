@@ -22,6 +22,8 @@ export class Basket extends Component<IBasket> {
       this.events.emit('basket:submit')
     })
 
+    this.listBasket.replaceChildren();
+    this.setDisabled(this.buttonBasket, true);
   }
 
   set list(items: HTMLElement[]) {

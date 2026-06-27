@@ -43,7 +43,7 @@ const header = new Header(document.querySelector('.header') as HTMLElement, even
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const orderForm = new OrderForm(cloneTemplate(orderFormTemplate), events);
 const contactForm = new ContactsForm(cloneTemplate(contactsFormTemplate), events);
-const cardPreview = new CardPreview(cloneTemplate(previewTemplate), events);
+
 
 const success = new Success(cloneTemplate(successTemplate), {
     onClick: () => {
@@ -67,9 +67,15 @@ serverApi.getProducts()
 // Отображение галереи товаров
 events.on('items:changed', () => {
     const itemsHTMLArray = itemsModel.getProducts().map(item => {
-        const card = new CardCatalog(cloneTemplate(galleryTemplate), events);
+        const template = cloneTemplate(galleryTemplate) as HTMLElement;
+        const card = new CardCatalog(
+            template,
+            () => {
+                events.emit('card:open', { id: item.id });
+            }
+        );
+
         const element = card.render(item);
-        element.dataset.id = item.id;
         return element;
     });
     page.catalog = itemsHTMLArray;
@@ -87,12 +93,19 @@ events.on('basket:changed', () => {
 
     const itemsHTMLArray = basketModel.getSelectedProducts().map((item, index) => {
         const cardNumber = index + 1;
-        const card = new CardBasket(cloneTemplate(cardBasketTemplate), events);
+
+        const template = cloneTemplate(cardBasketTemplate) as HTMLElement;
+        const card = new CardBasket(
+            template,
+            () => {
+                events.emit('basket:removeItem', { id: item.id });
+            }
+        );
+
         const element = card.render({
             ...item,
             cardNumber
         });
-        element.dataset.id = item.id;
         return element;
     });
 
@@ -102,10 +115,10 @@ events.on('basket:changed', () => {
     });
 });
 
-// Добавление и удаление товара из корзины
-events.on('selectedItem:basketAction', ({id}: {id: string})=> {
+// Обработчик добавления/удаления из превью
+events.on('preview:addToBasket', ({ id }: { id: string }) => {
     if (!basketModel.checkSelectedProduct(id)) {
-        const product  = itemsModel.getProductByID(id);
+        const product = itemsModel.getProductByID(id);
         if (product) {
             basketModel.addSelectedProduct(product);
             modal.close();
@@ -116,7 +129,12 @@ events.on('selectedItem:basketAction', ({id}: {id: string})=> {
         basketModel.deleteSelectedProduct(id);
         modal.close();
     }
-})
+});
+
+// Обработчик удаления из корзины
+events.on('basket:removeItem', ({ id }: { id: string }) => {
+    basketModel.deleteSelectedProduct(id);
+});
 
 //  Выбор карточки для отображения в модальном окне
 
@@ -129,8 +147,7 @@ events.on('card:open', ({id}: {id: string}) => {
     }
 })
 
-// Карточка для отображения в модальном окне добавлена в модель
-
+// Карточка для отображения в модальном окне
 events.on('card:selected', () => {
     const selectedProduct = itemsModel.getSelectedProduct();
 
@@ -141,12 +158,18 @@ events.on('card:selected', () => {
 
     const isInBasket = basketModel.checkSelectedProduct(selectedProduct.id);
 
+    const template = cloneTemplate(previewTemplate) as HTMLElement;
+    const cardPreview = new CardPreview(
+        template,
+        () => {
+            events.emit('preview:addToBasket', { id: selectedProduct.id });
+        }
+    );
+
     const itemHTML = cardPreview.render({
         ...selectedProduct,
         buttonText: isInBasket ? 'Удалить из корзины' : 'Купить'
     });
-
-    itemHTML.dataset.id = selectedProduct.id
 
     modal.render({
         content: itemHTML
@@ -269,5 +292,4 @@ events.on('modal:close', () => {
 
 events.on('success:close', () => {
     modal.close();
-    buyerModel.clearBuyerData();
 });

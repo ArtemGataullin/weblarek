@@ -1,136 +1,137 @@
 import { IProduct } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
-import { EventEmitter } from "../base/Events";
 
-interface ICard extends IProduct{
-  title: string;
-  price: number | null;
-  buttonText?: string;
-  cardNumber?: number;
+interface ICard extends IProduct {
+    title: string;
+    price: number | null;
+    buttonText?: string;
+    cardNumber?: number;
 }
 
 const categories = {
-  'софт-скил': 'card__category_soft',
-  'другое': 'card__category_other',
-  'дополнительное': 'card__category_additional',
-  'кнопка': 'card__category_button',
-  'хард-скил': 'card__category_hard'
+    'софт-скил': 'card__category_soft',
+    'другое': 'card__category_other',
+    'дополнительное': 'card__category_additional',
+    'кнопка': 'card__category_button',
+    'хард-скил': 'card__category_hard'
 };
 
-type CategoryKey = keyof typeof categories
+type CategoryKey = keyof typeof categories;
 
 export class Card extends Component<Partial<ICard>> {
-  protected titleCard: HTMLElement;
-  protected priceCard: HTMLElement;
+    protected titleCard: HTMLElement;
+    protected priceCard: HTMLElement;
+    protected imageCard: HTMLImageElement;
+    protected categoryCard: HTMLElement;
 
-  constructor (protected container: HTMLElement, protected events: EventEmitter) {
-    super(container)
+    constructor(protected container: HTMLElement) {
+        super(container);
 
-    this.titleCard = ensureElement('.card__title', this.container);
-    this.priceCard = ensureElement('.card__price', this.container);
-  }
-
-  set title(value: string) {
-    this.setText(this.titleCard, value)
-  }
-
-  set price(value: number | null) {
-    if (value === null) {
-      this.setText(this.priceCard, 'Бесценно')
-    } else {
-      this.setText(this.priceCard, `${value} синапсов`)
+        this.titleCard = ensureElement('.card__title', this.container);
+        this.priceCard = ensureElement('.card__price', this.container);
+        this.imageCard = this.container.querySelector('.card__image') as HTMLImageElement;
+        this.categoryCard = this.container.querySelector('.card__category') as HTMLElement;
     }
-  }
+
+    set title(value: string) {
+        this.setText(this.titleCard, value);
+    }
+
+    set price(value: number | null) {
+        if (value === null) {
+            this.setText(this.priceCard, 'Бесценно');
+        } else {
+            this.setText(this.priceCard, `${value} синапсов`);
+        }
+    }
+
+    set image(value: string) {
+        if (this.imageCard) {
+            this.setImage(this.imageCard, value, this.title);
+        }
+    }
+
+    set category(value: string) {
+        if (this.categoryCard) {
+            this.setText(this.categoryCard, value);
+            for (const key in categories) {
+                this.categoryCard.classList.toggle(categories[key as CategoryKey], key === value);
+            }
+        }
+    }
 }
 
 export class CardCatalog extends Card {
-  protected categoryCard: HTMLElement
-  protected imageCard: HTMLImageElement
+  constructor(container: HTMLElement, onClick: () => void) {
+    super(container);
 
-  constructor(protected container: HTMLElement, protected events: EventEmitter) {
-    super(container, events);
-
-    this.imageCard = ensureElement('.card__image', this.container) as HTMLImageElement;
-    this.categoryCard = ensureElement('.card__category', this.container);
-
-    this.container.addEventListener('click', () => {
-      const id = this.container.dataset.id;
-      if (id) {
-        this.events.emit('card:open', { id });
+    this.container.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.card__button')) {
+        return;
       }
+      onClick();
     });
-  }
-
-  set image(value: string) {
-    this.setImage(this.imageCard, value, this.title)
-  }
-
-  set category(value: string) {
-    this.setText(this.categoryCard, value);
-    for (const key in categories) {
-      this.categoryCard.classList.toggle(categories[key as CategoryKey], key === value)
-    }
   }
 }
 
-export class CardPreview extends CardCatalog {
-  protected descriptionCard: HTMLElement
-  protected buttonCard: HTMLButtonElement
+export class CardPreview extends Card {
+    protected descriptionCard: HTMLElement;
+    protected buttonCard: HTMLButtonElement;
+    protected onButtonClick: () => void;
 
-  constructor(protected container: HTMLElement, protected events: EventEmitter) {
-    super(container, events);
+    constructor(container: HTMLElement, onButtonClick: () => void) {
+        super(container);
 
-    this.descriptionCard = ensureElement('.card__text', this.container);
-    this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement
+        this.descriptionCard = ensureElement('.card__text', this.container);
+        this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement;
+        this.onButtonClick = onButtonClick;
 
-    this.buttonCard.addEventListener('click', () => {
-      const id = this.container.dataset.id;
-      if (id) {
-        this.events.emit('selectedItem:basketAction', { id });
-      }
-    });
-  }
-
-  set description(value: string) {
-    this.setText(this.descriptionCard, value)
-  }
-
-  set buttonText(value: string) {
-    this.setText(this.buttonCard, value);
-  }
-
-  set price(value: number | null) {
-    super.price = value;
-    if (value === null) {
-      this.setDisabled(this.buttonCard, true);
-      this.setText(this.buttonCard,'Недоступно')
-    } else {
-      this.setDisabled(this.buttonCard,false)
+        this.buttonCard.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.onButtonClick();
+        });
     }
-  }
-}
 
+    set description(value: string) {
+        this.setText(this.descriptionCard, value);
+    }
+
+    set buttonText(value: string) {
+        this.setText(this.buttonCard, value);
+    }
+
+    set price(value: number | null) {
+        super.price = value;
+        if (value === null) {
+            this.setDisabled(this.buttonCard, true);
+            this.setText(this.buttonCard, 'Недоступно');
+        } else {
+            this.setDisabled(this.buttonCard, false);
+        }
+    }
+}
 
 export class CardBasket extends Card {
-  protected buttonCard: HTMLButtonElement
-  protected indexCard: HTMLElement
+    protected buttonCard: HTMLButtonElement;
+    protected indexCard: HTMLElement;
+    protected onDeleteClick: () => void;
 
-  constructor(protected container: HTMLElement, protected events: EventEmitter) {
-    super(container, events);
+    constructor(container: HTMLElement, onDeleteClick: () => void) {
+        super(container);
 
-    this.indexCard = ensureElement('.basket__item-index', this.container);
-    this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement
+        this.indexCard = ensureElement('.basket__item-index', this.container);
+        this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement;
+        this.onDeleteClick = onDeleteClick;
 
-    this.buttonCard.addEventListener('click', () => {
-      const id = this.container.dataset.id;
-      if (id) {
-        this.events.emit('selectedItem:basketAction', { id });
-      }
-    });
-  }
+        this.buttonCard.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.onDeleteClick();
+        });
+    }
 
-  set cardNumber (value: number) {
-    this.setText(this.indexCard, String(value))
-  }
+    set cardNumber(value: number) {
+        this.setText(this.indexCard, String(value));
+    }
 }

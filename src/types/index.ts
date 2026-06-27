@@ -26,7 +26,6 @@ export interface IBuyer {
     email: string;
     phone: string;
     address: string;
-    items: string[];
 }
 
 export interface IOrderRequest extends IBuyer {

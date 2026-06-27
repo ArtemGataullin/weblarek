@@ -10,7 +10,6 @@ export class Buyer {
       address: "",
       email: "",
       phone: "",
-      items: [],
     };
   }
 
@@ -65,7 +64,6 @@ export class Buyer {
       address: "",
       email: "",
       phone: "",
-      items: [],
     };
     this.events.emit('buyer:changed');
   }
