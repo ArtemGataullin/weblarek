@@ -42,16 +42,14 @@ export class Form<T> extends Component<IForm> {
     this.setText(this.errorElement, value.filter(i => !!i).join(';'))
   }
 
-  get element(): HTMLFormElement {
-    return this.container;
-  }
-
-  render(state: Partial<T> & Partial<IForm>) {
-    const {valid, errors, ...inputs} = state;
-    super.render({valid, errors});
-    Object.assign(this, inputs);
-    return this.container
-  }
+  render(state?: Partial<T> & Partial<IForm>) {
+        if (state) {
+            const {valid, errors, ...inputs} = state;
+            super.render({valid, errors});
+            Object.assign(this, inputs);
+        }
+        return this.container;
+    }
 }
 
 export class OrderForm extends Form<Partial<IBuyer>> {

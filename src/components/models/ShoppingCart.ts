@@ -36,5 +36,6 @@ export class ShoppingCart {
   
   clearShoppingCart() {
     this.selectedProducts = [];
+    this.events.emit('basket:changed');
   }
 }

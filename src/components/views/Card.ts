@@ -23,7 +23,6 @@ type CategoryKey = keyof typeof categories
 export class Card extends Component<Partial<ICard>> {
   protected titleCard: HTMLElement;
   protected priceCard: HTMLElement;
-  protected CardId!: string
 
   constructor (protected container: HTMLElement, protected events: EventEmitter) {
     super(container)
@@ -43,10 +42,6 @@ export class Card extends Component<Partial<ICard>> {
       this.setText(this.priceCard, `${value} синапсов`)
     }
   }
-
-  set id(value: string) {
-    this.CardId = value;
-  }
 }
 
 export class CardCatalog extends Card {
@@ -60,8 +55,11 @@ export class CardCatalog extends Card {
     this.categoryCard = ensureElement('.card__category', this.container);
 
     this.container.addEventListener('click', () => {
-      this.events.emit('card:open', {id: this.CardId})
-    })
+      const id = this.container.dataset.id;
+      if (id) {
+        this.events.emit('card:open', { id });
+      }
+    });
   }
 
   set image(value: string) {
@@ -87,8 +85,11 @@ export class CardPreview extends CardCatalog {
     this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement
 
     this.buttonCard.addEventListener('click', () => {
-      this.events.emit('selectedItem:basketAction', {id: this.CardId})
-    })
+      const id = this.container.dataset.id;
+      if (id) {
+        this.events.emit('selectedItem:basketAction', { id });
+      }
+    });
   }
 
   set description(value: string) {
@@ -122,8 +123,11 @@ export class CardBasket extends Card {
     this.buttonCard = ensureElement('.card__button', this.container) as HTMLButtonElement
 
     this.buttonCard.addEventListener('click', () => {
-      this.events.emit('selectedItem:basketAction', {id: this.CardId})
-    })
+      const id = this.container.dataset.id;
+      if (id) {
+        this.events.emit('selectedItem:basketAction', { id });
+      }
+    });
   }
 
   set cardNumber (value: number) {

@@ -10,25 +10,28 @@ export class Buyer {
       address: "",
       email: "",
       phone: "",
-      total: 0,
       items: [],
     };
   }
 
   savePaymentType(payment: TPayment) {
     this.data.payment = payment;
+    this.events.emit('buyer:changed');
   }
 
   saveAddress(address: string) {
     this.data.address = address;
+    this.events.emit('buyer:changed');
   }
 
   saveEmail(email: string) {
     this.data.email = email;
+    this.events.emit('buyer:changed');
   }
 
   savePhone(phone: string) {
     this.data.phone = phone;
+    this.events.emit('buyer:changed');
   }
 
   getData(): IBuyer {
@@ -62,8 +65,8 @@ export class Buyer {
       address: "",
       email: "",
       phone: "",
-      total: 0,
       items: [],
     };
+    this.events.emit('buyer:changed');
   }
 }

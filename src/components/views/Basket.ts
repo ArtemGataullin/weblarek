@@ -21,20 +21,13 @@ export class Basket extends Component<IBasket> {
     this.buttonBasket.addEventListener('click', () => {
       this.events.emit('basket:submit')
     })
-  }
 
-  get element(): HTMLElement {
-    return this.container;
   }
 
   set list(items: HTMLElement[]) {
-    if (items.length) {
-      this.listBasket.replaceChildren(...items);
-      this.setDisabled(this.buttonBasket, false);
-    } else {
-      this.listBasket.replaceChildren(createElement<HTMLParagraphElement>('p', { textContent: 'Корзина пуста' }));
-      this.setDisabled(this.buttonBasket, true);
-    }
+    this.listBasket.replaceChildren(...items);
+
+    this.setDisabled(this.buttonBasket, items.length === 0);
   }
 
   set price(value: number) {

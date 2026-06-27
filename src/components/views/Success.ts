@@ -25,8 +25,4 @@ export class Success extends Component<ISuccess> {
   set total(value: number) {
     this.setText(this.descriptionElement, `Списано ${value} синапсов`)
   }
-
-  get element(): HTMLElement {
-    return this.container;
-  }
 }
