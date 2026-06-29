@@ -22,16 +22,12 @@ type CategoryKey = keyof typeof categories;
 export class Card extends Component<Partial<ICard>> {
     protected titleCard: HTMLElement;
     protected priceCard: HTMLElement;
-    protected imageCard: HTMLImageElement;
-    protected categoryCard: HTMLElement;
 
     constructor(protected container: HTMLElement) {
         super(container);
 
         this.titleCard = ensureElement('.card__title', this.container);
         this.priceCard = ensureElement('.card__price', this.container);
-        this.imageCard = this.container.querySelector('.card__image') as HTMLImageElement;
-        this.categoryCard = this.container.querySelector('.card__category') as HTMLElement;
     }
 
     set title(value: string) {
@@ -44,6 +40,19 @@ export class Card extends Component<Partial<ICard>> {
         } else {
             this.setText(this.priceCard, `${value} синапсов`);
         }
+    }
+}
+
+// CardWithImage - для карточек с изображением и категорией
+export class CardWithImage extends Card {
+    protected imageCard: HTMLImageElement;
+    protected categoryCard: HTMLElement;
+
+    constructor(container: HTMLElement) {
+        super(container);
+
+        this.imageCard = this.container.querySelector('.card__image') as HTMLImageElement;
+        this.categoryCard = this.container.querySelector('.card__category') as HTMLElement;
     }
 
     set image(value: string) {
@@ -62,21 +71,18 @@ export class Card extends Component<Partial<ICard>> {
     }
 }
 
-export class CardCatalog extends Card {
-  constructor(container: HTMLElement, onClick: () => void) {
-    super(container);
+export class CardCatalog extends CardWithImage {
+    constructor(container: HTMLElement, onClick: () => void) {
+        super(container);
 
-    this.container.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.card__button')) {
-        return;
-      }
-      onClick();
-    });
-  }
+        // Просто вызываем колбэк при клике
+        this.container.addEventListener('click', () => {
+            onClick();
+        });
+    }
 }
 
-export class CardPreview extends Card {
+export class CardPreview extends CardWithImage  {
     protected descriptionCard: HTMLElement;
     protected buttonCard: HTMLButtonElement;
     protected onButtonClick: () => void;

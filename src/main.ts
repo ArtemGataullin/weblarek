@@ -44,6 +44,17 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const orderForm = new OrderForm(cloneTemplate(orderFormTemplate), events);
 const contactForm = new ContactsForm(cloneTemplate(contactsFormTemplate), events);
 
+// Создаем экземпляр CardPreview один раз
+const cardPreview = new CardPreview(
+    cloneTemplate(previewTemplate) as HTMLElement,
+    () => {
+        // ✅ В обработчике получаем ID из модели
+        const selectedProduct = itemsModel.getSelectedProduct();
+        if (selectedProduct) {
+            events.emit('preview:addToBasket', { id: selectedProduct.id });
+        }
+    }
+);
 
 const success = new Success(cloneTemplate(successTemplate), {
     onClick: () => {
@@ -158,14 +169,6 @@ events.on('card:selected', () => {
 
     const isInBasket = basketModel.checkSelectedProduct(selectedProduct.id);
 
-    const template = cloneTemplate(previewTemplate) as HTMLElement;
-    const cardPreview = new CardPreview(
-        template,
-        () => {
-            events.emit('preview:addToBasket', { id: selectedProduct.id });
-        }
-    );
-
     const itemHTML = cardPreview.render({
         ...selectedProduct,
         buttonText: isInBasket ? 'Удалить из корзины' : 'Купить'
@@ -173,8 +176,8 @@ events.on('card:selected', () => {
 
     modal.render({
         content: itemHTML
-    })
-})
+    });
+});
 
 //  Открытие модального окна с корзиной
 
@@ -264,7 +267,11 @@ events.on('contacts:submit', () => {
 
     serverApi.postOrder(orderRequest)
         .then(result => {
+            // Очищаем корзину
             basketModel.clearShoppingCart();
+            
+            // Очищаем данные покупателя после успешного заказа
+            buyerModel.clearBuyerData();
             
             const successElement = success.render({
                 total: result.total
